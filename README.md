@@ -72,14 +72,6 @@ member_id  first_name  last_name  registration_count
 2          Bob         Jones      1
 ```
 
-### Variation 1.5v — LEFT JOIN (includes members with 0)
-
-```
-member_id  first_name  last_name  registration_count
----------  ----------  ---------  ------------------
-1          Alice       Smith      0
-```
-
 ---
 
 ## 1.6 Members with ≥2 class attendances (Attended status only)
@@ -359,9 +351,20 @@ Wednesday    1
 
 ---
 
-## 6.4 Average daily attendance per location (full date range)
+## 6.4 Average daily attendance per location (only days with visits)
 
-Uses all calendar days between the earliest and latest recorded visit per location (including days with zero attendance).
+```
+location_name      avg_daily_attendance
+-----------------  --------------------
+Downtown Fitness   1.0
+Suburban Wellness
+```
+
+4 visits / 4 distinct visit-days = 1.0
+
+### Variation 6.4v (advanced) — Full date range including zero days
+
+Uses all calendar days between the earliest and latest recorded visit per location (including days with zero attendance). **This variation requires additional self-learning around SQLite date functions and window queries not directly covered in course material.**
 
 ```
 location_name      avg_daily_attendance
@@ -373,16 +376,7 @@ Suburban Wellness
 - Downtown Fitness: 4 visits across 36 days (Jan 10 – Feb 14) → 4/36 = 0.11
 - Suburban Wellness: no attendance records → NULL
 
-### Variation 6.4v (simple) — Only days with visits
-
-```
-location_name      avg_daily_attendance
------------------  --------------------
-Downtown Fitness   1.0
-Suburban Wellness
-```
-
-4 visits / 4 distinct visit-days = 1.0
+> **Note:** Both methods are accepted. The simpler method demonstrates core concepts; the advanced variant extends your learning beyond taught material.
 
 ---
 
@@ -429,14 +423,4 @@ session_id  member_name    session_date  start_time  end_time
 1           Alice Smith    2025-01-25    09:00:00    10:00:00
 2           Charlie Brown  2025-01-28    14:00:00    15:00:00
 3           Emily Jones    2025-02-04    10:00:00    11:00:00
-```
-
-### Variation 8.1v2 — With notes column
-
-```
-session_id  member_name    session_date  start_time  end_time  notes
-----------  -------------  ------------  ----------  --------  --------------------
-1           Alice Smith    2025-01-25    09:00:00    10:00:00  Strength training
-2           Charlie Brown  2025-01-28    14:00:00    15:00:00  Cardio workout
-3           Emily Jones    2025-02-04    10:00:00    11:00:00  Flexibility exercises
 ```
