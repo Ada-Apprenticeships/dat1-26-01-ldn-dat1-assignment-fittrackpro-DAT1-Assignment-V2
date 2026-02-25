@@ -122,14 +122,6 @@ payment_id  amount  payment_date         payment_method
 7           20.0    2025-01-20 15:30:00  Cash
 ```
 
-### Variation 2.3v — Member name included
-
-```
-payment_id  member_name    amount  payment_date         payment_method
-----------  -------------  ------  -------------------  --------------
-7           Kevin Mitnick  20.0    2025-01-20 15:30:00  Cash
-```
-
 ---
 
 # 3. Equipment Management
@@ -166,7 +158,7 @@ Cardio          <varies>
 Strength        <varies>
 ```
 
-### Variation 3.3v — Fixed date (2025-01-01)
+### Example 3.3— Fixed date (2025-01-01)
 
 ```
 equipment_type  avg_age_days
@@ -190,10 +182,6 @@ class_id  class_name   instructor_name
 2         Yoga Basics  Lara Croft
 3         HIIT         Ivy Irwin
 ```
-
-### Variation 4.1v — With DISTINCT
-
-Same output (no duplicates in data).
 
 ---
 
@@ -364,7 +352,7 @@ Suburban Wellness
 
 ### Variation 6.4v (advanced) — Full date range including zero days
 
-Uses all calendar days between the earliest and latest recorded visit per location (including days with zero attendance). **This variation requires additional self-learning around SQLite date functions and window queries not directly covered in course material.**
+Uses all calendar days between the earliest and latest recorded visit per location (including days with zero attendance). **This variation requires additional self-learning around SQLite date functions and window queries not directly covered in course material. However does enable to demonstrate more to advance query ability and achievable to higher standards**
 
 ```
 location_name      avg_daily_attendance
@@ -401,14 +389,6 @@ staff_id  first_name  last_name  role
 trainer_id  trainer_name  session_count
 ----------  ------------  -------------
 2           Ivy Irwin     3
-```
-
-### Variation 7.2v — February 2025 only
-
-```
-trainer_id  trainer_name  session_count
-----------  ------------  -------------
-2           Ivy Irwin     1
 ```
 
 ---
