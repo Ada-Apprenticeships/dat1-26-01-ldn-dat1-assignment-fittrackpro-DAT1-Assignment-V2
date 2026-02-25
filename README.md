@@ -1,627 +1,442 @@
-# 📝 Fittrack Pro Database Assignment
+# FitTrack Pro — Complete Student Reference (Expected Output)
 
-This README will guide you through the assignment for the Fittrack Pro business
+> Each query file runs on a **fresh database**. Within a file, queries execute in order — INSERT/UPDATE/DELETE statements affect later queries.
 
-## Assignment Overview
+---
 
-This assignment consists of one part broken into multiple steps
+# 1. User Management
 
-You are tasked with initialising and creating queries for a database to allow for deployment in the future.
+## 1.1 Retrieve all members
 
-FitTrack Pro is a comprehensive database management system designed for our chain of fitness centres. This project is crucial for managing our operations efficiently and providing insights into our business performance.
-
-** SQL Query Development **
-- Create SQL commands to setup the database tables
-- Import precursor data into database
-- Write SQL queries to retrieve and manipulate data according to the business requirements
-- Test the SQL queries
-
-## ⚙️ Check your installation
-
-We recommend using a [GitHub Codespace](https://docs.github.com/en/codespaces/overview) as your development environment for this project. If you create a Codespace using this repository it should automatically install the core applications and dependencies you need to get started with this assignment. However you should check that you have the correct software installed in your codespace before starting the assignment.
-
-1. Check you have `sqlite3` installed in your project:
-
-```terminal
-sqlite3 --version
+```
+member_id  first_name  last_name  email                    join_date
+---------  ----------  ---------  -----------------------  ----------
+1          Alice       Smith      alice.smith@email.com    2023-01-10
+2          Bob         Jones      bob.jones@email.com      2023-02-15
+3          Charlie     Brown      charlie.brown@email.com  2023-03-20
+4          Diana       Prince     diana.prince@email.com   2023-04-25
+5          Emily       Jones      emily.jones@email.com    2023-05-10
+6          Frank       Castle     frank.castle@email.com   2023-06-15
+7          Grace       Lee        grace.lee@email.com      2023-07-20
+8          Henry       Ford       henry.ford@email.com     2023-08-05
+9          Iris        West       iris.west@email.com      2023-09-10
+10         Jack        Ryan       jack.ryan@email.com      2023-10-15
+11         Kevin       Mitnick    kevin.mitnick@email.com  2023-11-20
 ```
 
-## 🏗️ SQL query development
+11 rows returned.
 
-You will focus on writing SQL queries to set up the database tables, insert sample data and retrieve data according to the query requirements.
+---
 
-### Database Schema
+## 1.2 Update member 5's contact information
 
-Create the following tables in your database. We have provided a file `schema.sql` inside the `src` folder where you can create tables and insert data using SQL.
-Foreign Keys are commonly at the bottom of each set of table's attributes, use these to work out relations.
-Some attributes will show example values or example acceptable values for reference, you can further see some data in `data` folder
+*Affects 1 row.* No result set — this is an UPDATE statement.
 
-#### `locations` table
+Member 5 (Emily Jones) email changes to `emily.jones.new@email.com` and phone to `555-9999`.
 
-| Attribute     | Format / Example        |
-| ------------- | ----------------------- |
-| location_id   |                         |
-| name          |                         |
-| address       |                         |
-| phone_number  | 07868 574632            |
-| email         | "email@domain.com"      |
-| opening_hours | "hh:mm-hh:mm"           |
+---
 
+## 1.3 Count total members
 
-#### `members` table
-
-| Attribute               | Format / Example        |
-| ----------------------- | ----------------------- |
-| member_id               |                         |
-| first_name              |                         |
-| last_name               |                         |
-| email                   | "email@domain.com"      |
-| phone_number            | 07868 574632            |
-| date_of_birth           | yyyy-mm-dd              |
-| join_date               | yyyy-mm-dd              |
-| emergency_contact_name  | "John Doe"              |
-| emergency_contact_phone | 07868 574632            |
-
-
-#### `staff` table
-
-| Attribute    | Format / Example                              |
-| ------------ | --------------------------------------------- |
-| staff_id     |
-| first_name   |
-| last_name    |
-| email        | "email@domain.com"                            |
-| phone_number | 07868 574632                                  |
-| position     | Trainer, Manager, Receptionist, Maintenance   |
-| hire_date    | yyyy-mm-dd                                    |
-| location_id  |
-
-
-#### `equipment` table
-
-| Attribute             | Format / Example   |
-| --------------------- | ------------------ |
-| equipment_id          |
-| name                  |
-| type                  | Cardio, Strength   |
-| purchase_date         | yyyy-mm-dd         |
-| last_maintenance_date | yyyy-mm-dd         |
-| next_maintenance_date | yyyy-mm-dd         |
-| location_id           |
-
-
-#### `classes` table
-
-| Attribute   | Format / Example   |
-| ----------- | ------------------ |
-| class_id    |
-| name        |
-| description |
-| capacity    | 30                 |
-| duration    | 20                 |
-| location_id |
-
-
-#### `class_schedule` table
-
-| Attribute   | Format / Example       |
-| ----------- | ---------------------- |
-| schedule_id |
-| class_id    |
-| staff_id    |
-| start_time  | "yyyy-mm-dd hh:mm:ss"  |
-| end_time    | "yyyy-mm-dd hh:mm:ss"  |
-
-
-#### `memberships` table
-
-| Attribute     | Format / Example  |
-| ------------- | ----------------- |
-| membership_id |
-| member_id     |
-| type          |
-| start_date    | "yyyy-mm-dd"      |
-| end_date      | "yyyy-mm-dd"      |
-| status        | Active, Inactive  |
-
-
-#### `attendance` table
-
-| Attribute      | Format / Example    |
-| -------------- | -----------------   |
-| attendance_id  |
-| member_id      |
-| location_id    |
-| check_in_time  | yyyy-mm-dd hh:mm:ss |
-| check_out_time | yyyy-mm-dd hh:mm:ss |
-
-
-#### `class_attendance` table
-
-| Attribute           | Format / Example  |
-| ------------------- | ----------------- |
-| class_attendance_id |
-| schedule_id         |
-| member_id           |
-| attendance_status   | Registered, Attended, Unattended |
-
-
-#### `payments` table
-
-| Attribute      | Format / Example  |
-| -------------- | ----------------- |
-| payment_id     |
-| member_id      |
-| amount         | 20.00                              |
-| payment_date   | yyyy-mm-dd hh:mm:ss                |
-| payment_method | Credit Card, Bank Transfer, PayPal |
-| payment_type   | Monthly membership fee, Day pass   |
-
-
-#### `personal_training_sessions` table
-
-| Attribute    | Format / Example  |
-| ------------ | ----------------- |
-| session_id   |
-| member_id    |
-| staff_id     |
-| session_date | yyyy-mm-dd         |
-| start_time   | hh:mm:ss           |
-| end_time     | hh:mm:ss           |
-| notes        |
-
-
-#### `member_health_metrics` table
-
-| Attribute           | Format / Example  |
-| ------------------- | ----------------- |
-| metric_id           |
-| member_id           |
-| measurement_date    | yyyy-mm-dd        |
-| weight              | 64.5              |
-| body_fat_percentage | 20.0              |
-| muscle_mass         | 50.0              |
-| bmi                 | 23.5              |
-
-
-#### `equipment_maintenance_log` table
-
-| Attribute        | Format / Example  |
-| ---------------- | ----------------- |
-| log_id           |
-| equipment_id     |
-| maintenance_date | yyyy-mm-dd        |
-| description      |
-| staff_id         |
-
-Once you've created your tables, you'll need to run this and create some data to add into your database to check that your tables are defined correctly.
-
-### Database Import
-
-The team has provided us with some initial data alongside creating our own data entries to help test the new database, when the schema is ready they we will need to write the insertions for the database, the initial data is in `data/[filename].csv`. Each CSV representing an individual table.
-
-Your next step is to write the insertions for the database, use the sample CSV data to fill in the `insertion.sql` file.
-
-
-## Task Details
-
-Tasks are to be completed from the various departments, each department has its own set of tasks.
-
-Complete the task in their respective files, for example, user management tasks are to be completed in `user_management.sql`.
-
-### 1. User Management (user_management.sql)
-
-#### 1.1. Retrieve all members
-
-**Task**: Retrieve all members
-
-**Output**: A result set with columns:
-
-```plaintext
-member_id | first_name | last_name | email | join_date
+```
+total_members
+-------------
+11
 ```
 
 ---
 
-#### 1.2. Update a member's contact information
+## 1.4 Member with most class registrations (Registered status only)
 
-**Task**: Update the phone number and email for member with ID 5
+```
+member_id  first_name  last_name  registration_count
+---------  ----------  ---------  ------------------
+5          Emily       Jones      2
+```
 
-**Details**:
-- **New phone number**: '07000 100005'
-- **New email**: [emily.jones.updated@email.com](mailto:emily.jones.updated@newemail.com)
+### Variation 1.4v — All statuses
 
-**Output**: No result set. Affects 1 row.
-
----
-
-#### 1.3. Count total number of members
-
-**Task**: Count total number of members
-
-**Output**: A single value representing the total number of members.
-
----
-
-#### 1.4. Find member with the most class registrations
-
-**Task**: Find member with the most class registrations
-
-**Output**: A result set with columns:
-
-```plaintext
-member_id | first_name | last_name | registration_count
+```
+member_id  first_name  last_name  registration_count
+---------  ----------  ---------  ------------------
+5          Emily       Jones      3
 ```
 
 ---
 
-#### 1.5. Find member with the least class registrations
+## 1.5 Member with least class registrations (Registered status only)
 
-**Task**: Find member with the least class registrations
+```
+member_id  first_name  last_name  registration_count
+---------  ----------  ---------  ------------------
+2          Bob         Jones      1
+```
 
-**Output**: A result set with columns:
+### Variation 1.5v — LEFT JOIN (includes members with 0)
 
-```plaintext
-member_id | first_name | last_name | registration_count
+```
+member_id  first_name  last_name  registration_count
+---------  ----------  ---------  ------------------
+1          Alice       Smith      0
 ```
 
 ---
 
-#### 1.6. Count the total number of members who have attended at least two classes
- 
- **Task**: Count the total number of members who have attended at least two classes
- 
- **Output**: A single value representing the count.
- ```plaintext
- Count
- ```
+## 1.6 Members with ≥2 class attendances (Attended status only)
 
+```
+Count
+-----
+1
+```
 
-### 2. Payment Management (payment_management.sql)
+### Variation 1.6v — Registered + Attended
 
-------
-------
-#### 2.1. Record a payment for a membership
-
-**Task**: Insert a new payment record for member with ID 11
-
-**Details**:
-- **Amount**: £50.00
-- **Payment date**: Current date and time
-- **Payment method**: 'Credit Card'
-- **Payment type**: 'Monthly membership fee'
-
-**Output**: No result set. Affects 1 row.
-
----
-
-#### 2.2. Calculate total revenue from membership fees for specified period
-
-**Task**: Calculate total revenue from membership fees for each month of the 4 months (from November 2024 - Feb 2025)
-
-**Output**: A result set with columns:
-```plaintext           
-month | total_revenue  
-```                    
-
----
-
-#### 2.3. Find all day pass purchases
-
-**Task**: Find all day pass purchases
-
-**Output**: A result set with columns:
-```plaintext 
-payment_id | amount | payment_date | payment_method |
-```          
-
-### 3. Equipment Management (equipment_management.sql)
-
----
-
-#### 3.1. Find equipment due for maintenance in the next 30 days
- 
- **Task**: Find equipment due for maintenance in the next 30 days from '2025-01-01'
- 
- **Output**: A result set with columns:
-
-```plaintext
-equipment_id | name | next_maintenance_date
+```
+Count
+-----
+4
 ```
 
 ---
 
-#### 3.2. Count equipment types in stock 
+# 2. Payment Management
 
-**Task**: Count the number of equipment types in stock
+## 2.1 Record a new payment
 
-**Details**: Cardio, Strength
+*Affects 1 row.* No result set — this is an INSERT statement.
 
-**Output**: A result set with columns:
+New payment for member 11, amount £50.00, paid via Credit Card.
 
-```plaintext
-equipment_type | count
+---
+
+## 2.2 Monthly revenue (November 2024 – January 2025)
+
+```
+month    total_revenue
+-------  -------------
+2024-11  100.0
+2024-12  100.0
+2025-01  100.0
 ```
 
 ---
 
-#### 3.3. Calculate average age of equipment by type (in days)
+## 2.3 Day pass purchases
 
-**Task**: Calculate the average age of equipment by type (in days)
-
-**Output**: A result set with columns:
-
-```plaintext
-equipment_type | avg_age_days
+```
+payment_id  amount  payment_date         payment_method
+----------  ------  -------------------  --------------
+7           20.0    2025-01-20 15:30:00  Cash
 ```
 
-### 4. Class Scheduling (class_scheduling.sql)
+### Variation 2.3v — Member name included
 
-#### 4.1. List all classes with their instructors
-
-**Task**: List all classes with their instructors
-
-**Output**: A result set with columns:
-
-```plaintext
-class_id | class_name | instructor_name
+```
+payment_id  member_name    amount  payment_date         payment_method
+----------  -------------  ------  -------------------  --------------
+7           Kevin Mitnick  20.0    2025-01-20 15:30:00  Cash
 ```
 
 ---
 
-#### 4.2. Find available classes for a specific date
+# 3. Equipment Management
 
-**Task**: List classes available on '2025-02-01'
+## 3.1 Equipment needing maintenance within 30 days of 2025-01-01
 
-**Output**: A result set with columns:
-
-```plaintext
-class_id | name | start_time | end_time | available_spots
+```
+equipment_id  name            next_maintenance_date
+------------  --------------  ---------------------
+1             Treadmill 2000  2025-01-15
 ```
 
 ---
 
-#### 4.3. Register a member for a class
+## 3.2 Count of equipment by type
 
-**Task**: Register member with ID 11 for the Spin Class (class_id 1) on '2025-02-01'
-
-**Output**: No result set. Affects 1 row in class_attendance table.
-
----
-
-#### 4.4. Cancel a class registration
-
-**Task**: Cancel the registration for member with ID 3 from the Scheduled Yoga Basics class (schedule_id 7)
-
-**Output**: No result set. Affects 1 row in class_attendance table.
-
----
-
-#### 4.5. Display most popular classes
-
-**Task**: Show the most popular classes by registration count
-
-**Details**: "Registered" classes
-
-**Output**: A result set with columns and a single record:
-
-```plaintext
-class_id | class_name | registration_count
+```
+equipment_type  count
+--------------  -----
+Cardio          2
+Strength        2
 ```
 
 ---
 
-#### 4.6. Calculate average number of classes per member
+## 3.3 Average age of equipment by type (using current date)
 
-**Task**: Calculate the average number of classes per member
+> **Note**: Output is date-sensitive (uses current date).
 
-**Details**: include "Registered" or "Attended" member
+```
+equipment_type  avg_age_days
+--------------  ------------
+Cardio          <varies>
+Strength        <varies>
+```
 
-**Output**: A single value representing the average number of classes per member.
+### Variation 3.3v — Fixed date (2025-01-01)
 
-
-### 5. Membership Management (membership_management.sql)
-
-#### 5.1. List all active memberships with member details
-
-**Task**: List all active memberships
-
-**Output**: A result set with columns:
-
-```plaintext
-member_id | first_name | last_name | membership_type | join_date
+```
+equipment_type  avg_age_days
+--------------  ------------
+Cardio          699.0
+Strength        649.0
 ```
 
 ---
 
-#### 5.2. Calculate the average duration of gym visits for each membership type
+# 4. Class Scheduling
 
-**Task**: Calculate the average duration of gym visits for each membership type
+> 4.3 (INSERT) and 4.4 (DELETE) modify data before 4.5–4.6 run.
 
-**Output**: A result set with columns:
+## 4.1 List all classes with instructors
 
-```plaintext
-membership_type | avg_visit_duration_minutes
+```
+class_id  class_name   instructor_name
+--------  -----------  ---------------
+1         Spin Class   Ivy Irwin
+2         Yoga Basics  Lara Croft
+3         HIIT         Ivy Irwin
+```
+
+### Variation 4.1v — With DISTINCT
+
+Same output (no duplicates in data).
+
+---
+
+## 4.2 Classes available on 2025-02-01
+
+```
+class_id  name         start_time           end_time             available_spots
+--------  -----------  -------------------  -------------------  ---------------
+1         Spin Class   2025-02-01 09:00:00  2025-02-01 09:45:00  18
+2         Yoga Basics  2025-02-01 10:00:00  2025-02-01 11:00:00  13
 ```
 
 ---
 
-#### 5.3. Identify members with expiring memberships in 2025
- 
- **Task**: List members whose memberships will expire in 2025
+## 4.3 Enroll member 11 in Spin Class (schedule_id 1)
 
-**Output**: A result set with columns:
+*Affects 1 row.* No result set — this is an INSERT statement.
 
-```plaintext
-member_id | first_name | last_name | email | end_date
+---
+
+## 4.4 Cancel member 3's registration for schedule 7
+
+*Affects 1 row.* No result set — this is a DELETE statement (removes the row).
+
+---
+
+## 4.5 Most popular class (Registered status)
+
+```
+class_id  class_name  registration_count
+--------  ----------  ------------------
+1         Spin Class  2
 ```
 
-### 6. Attendance Tracking (attendance_tracking.sql)
+### Variation 4.5v — All statuses
 
----
-
-#### 6.1. Record a member's gym visit
-
-**Task**: Insert a new attendance record for member with ID 7 at Downtown Fitness
-
-**Details**:
-- **Location**: Downtown Fitness (location_id 1)
-- **Check-in time**: '2025-02-14 16:30:00'
-
-**Output**: No result set. Affects 1 row in attendance table.
-
----
-
-#### 6.2. Retrieve a member's attendance history
-
-**Task**: Get attendance history for member with ID 5
-
-**Output**: A result set with columns:
-
-```plaintext
-visit_date | check_in_time | check_out_time
+```
+class_id  class_name  registration_count
+--------  ----------  ------------------
+1         Spin Class  4
 ```
 
 ---
 
-#### 6.3. Find the busiest day of the week based on gym visits
+## 4.6 Average classes per member
 
-**Task**: Identify the busiest day of the week based on gym visits
+```
+avg_classes_per_member
+----------------------
+1.67
+```
 
-**Output**: A result set with columns:
+### Variation 4.6v — Divided by all 11 members
 
-```plaintext
-day_of_week | visit_count
+```
+avg_classes_per_member
+----------------------
+0.91
 ```
 
 ---
 
-#### 6.4. Calculate the average daily attendance for each location
+# 5. Membership Management
 
-**Task**: Calculate the average daily attendance for each location
+## 5.1 Active memberships
 
-**Details**: including "no show" days
-
-**Output**: A result set with columns:
-
-```plaintext
-location_name | avg_daily_attendance
 ```
-### 7. Staff Management (staff_management.sql)
-
-#### 7.1. List all staff members by position
-
-**Task**: List all staff members by position
-
-**Output**: A result set with columns:
-
-```plaintext
-staff_id | first_name | last_name | role
+member_id  first_name  last_name  membership_type  join_date
+---------  ----------  ---------  ---------------  ----------
+2          Bob         Jones      Premium          2023-02-15
+3          Charlie     Brown      Standard         2023-03-20
+5          Emily       Jones      Premium          2023-05-10
 ```
 
 ---
 
-#### 7.2. Find trainers with one or more personal training session in the upcoming month
- 
- **Task**: Find trainers with one or more personal training session in the next 30 days from '2025-01-20'
+## 5.2 Average visit duration by membership type
 
-**Output**: A result set with columns:
-
-```plaintext
-trainer_id | trainer_name | session_count
 ```
-
-### 8. Personal Training (personal_training.sql)
+membership_type  avg_visit_duration_minutes
+---------------  --------------------------
+Premium          82.5
+Standard         60.0
+```
 
 ---
 
-#### 8.1. List all personal training sessions for specific trainer "Ivy Irwin"
+## 5.3 Memberships expiring in 2025
 
-**Task**: List all personal training sessions for specific trainer "Ivy Irwin"
-
-**Output**: A result set with columns:
-
-```plaintext
-session_id | member_name | session_date | start_time | end_time
+```
+member_id  first_name  last_name  email                    end_date
+---------  ----------  ---------  -----------------------  ----------
+1          Alice       Smith      alice.smith@email.com    2025-01-01
+2          Bob         Jones      bob.jones@email.com      2025-06-15
+3          Charlie     Brown      charlie.brown@email.com  2025-03-20
+5          Emily       Jones      emily.jones@email.com    2025-05-10
 ```
 
-## Task Outline
-Use this as a checklist to keep track of your progress.
+4 rows (includes expired memberships with 2025 end dates).
 
-#### 1. User Management (user_management.sql)
-1. [ ] 1.1 Retrieve all members
-2. [ ] 1.2 Update a member's contact information
-3. [ ] 1.3 Count total number of members
-4. [ ] 1.4 Find member with the most class registrations
-5. [ ] 1.5 Find member with the least class registrations
-6. [ ] 1.6 Count the total number of members who have attended at least two classes
+### Variation 5.3v — Active only
 
-#### 2. Payment Management (payment_management.sql)
-1. [ ] 2.1 Record a payment for a membership
-2. [ ] 2.2 Calculate total revenue from membership fees for each month of the last year
-3. [ ] 2.3 Find all day pass purchases
-
-#### 3. Equipment Management (equipment_management.sql)
-1. [ ] 3.1 Find equipment due for maintenance in the next 30 days
-2. [ ] 3.2 Count equipment types in stock
-3. [ ] 3.3 Calculate average age of equipment by type (in days)
-
-#### 4. Class Scheduling (class_scheduling.sql)
-1. [ ] 4.1 List all classes with their instructors
-2. [ ] 4.2 Find available classes for a specific date
-3. [ ] 4.3 Register a member for a class
-4. [ ] 4.4 Cancel a class registration
-5. [ ] 4.5 List top 3 most popular classes
-6. [ ] 4.6 Calculate average number of classes per member
-
-#### 5. Membership Management (membership_management.sql)
-1. [ ] 5.1 List all active memberships
-2. [ ] 5.2 Calculate the average duration of gym visits for each membership type
-3. [ ] 5.3 Identify members with expiring memberships this year
-
-#### 6. Attendance Tracking (attendance_tracking.sql)
-1. [ ] 6.1 Record a member's gym visit
-2. [ ] 6.2 Retrieve a member's attendance history
-3. [ ] 6.3 Find the busiest day of the week based on gym visits
-4. [ ] 6.4 Calculate the average daily attendance for each location
-
-#### 7. Staff Management (staff_management.sql)
-1. [ ] 7.1 List all staff members by role
-2. [ ] 7.2 Find trainers with one or more personal training session in the next 30 days
-
-#### 8. Personal Training (personal_training.sql)
-1. [ ] 8.1 List all personal training sessions for a specific trainer
-
-## 🔍 Checking your SQL queries
-
-`sqlite3` has a CLI (command line interface) which we can use to interact with our Sqlite databases. You can check your SQL queries by running your `.sql` files with the `sqlite3` CLI.
-
-| ℹ️ Double check you have `sqlite3` installed in your codespace. Open a terminal and run `sqlite3 --version` to check you get the sqlite3 version in the command output.
-
-To run any `.sql` file with `sqlite3`, you can:
-
-1. Ensure your `.sql` file opens a database using the `.open` statement.
-2. Open a terminal and use the `sqlite3` command-line tool from the root directory:
-   ```sh
-   sqlite3 [name-of-database].db < [path-to-file].sql
-   ```
-3. Check the query output when you run the command.
-
-For example, to run the file `schema.sql` located in the `src` directory, you can:
-
-1. Open a terminal and run the following command from the root directory:
-
-```sh
-sqlite3 fittrackpro.db < src/schema.sql
 ```
-and
-```sh
-sqlite3 fittrackpro.db < src/queries/1_usermanagement.sql
+member_id  first_name  last_name  email                    end_date
+---------  ----------  ---------  -----------------------  ----------
+2          Bob         Jones      bob.jones@email.com      2025-06-15
+3          Charlie     Brown      charlie.brown@email.com  2025-03-20
+5          Emily       Jones      emily.jones@email.com    2025-05-10
 ```
 
-2. Check the query output when you run the command
+3 rows (excludes Alice — Inactive membership).
 
+---
 
-## 📝 Additional Notes
+# 6. Attendance Tracking
 
-Happy coding and testing!
+> 6.1 (INSERT) adds a record before 6.2–6.4 run.
+
+## 6.1 Record member 7's gym visit
+
+*Affects 1 row.* No result set — this is an INSERT statement.
+
+Member 7 (Grace Lee) checks in at Downtown Fitness on 2025-02-14 at 16:30.
+
+---
+
+## 6.2 Attendance history for member 5
+
+```
+visit_date  check_in_time        check_out_time
+----------  -------------------  -------------------
+2025-01-10  2025-01-10 08:00:00  2025-01-10 09:30:00
+2025-01-12  2025-01-12 18:00:00  2025-01-12 19:15:00
+```
+
+---
+
+## 6.3 Busiest day of the week
+
+```
+day_of_week  visit_count
+-----------  -----------
+Friday       2
+```
+
+### Variation 6.3v — All days shown
+
+```
+day_of_week  visit_count
+-----------  -----------
+Friday       2
+Sunday       1
+Wednesday    1
+```
+
+---
+
+## 6.4 Average daily attendance per location (full date range)
+
+Uses all calendar days between the earliest and latest recorded visit per location (including days with zero attendance).
+
+```
+location_name      avg_daily_attendance
+-----------------  --------------------
+Downtown Fitness   0.11
+Suburban Wellness
+```
+
+- Downtown Fitness: 4 visits across 36 days (Jan 10 – Feb 14) → 4/36 = 0.11
+- Suburban Wellness: no attendance records → NULL
+
+### Variation 6.4v (simple) — Only days with visits
+
+```
+location_name      avg_daily_attendance
+-----------------  --------------------
+Downtown Fitness   1.0
+Suburban Wellness
+```
+
+4 visits / 4 distinct visit-days = 1.0
+
+---
+
+# 7. Staff Management
+
+## 7.1 List all staff members by position
+
+```
+staff_id  first_name  last_name  role
+--------  ----------  ---------  ------------
+1         James       Bond       Manager
+3         Sarah       Connor     Receptionist
+2         Ivy         Irwin      Trainer
+4         Lara        Croft      Trainer
+```
+
+---
+
+## 7.2 Trainers with ≥1 session in 30 days from 2025-01-20
+
+```
+trainer_id  trainer_name  session_count
+----------  ------------  -------------
+2           Ivy Irwin     3
+```
+
+### Variation 7.2v — February 2025 only
+
+```
+trainer_id  trainer_name  session_count
+----------  ------------  -------------
+2           Ivy Irwin     1
+```
+
+---
+
+# 8. Personal Training
+
+## 8.1 Personal training sessions for trainer "Ivy Irwin"
+
+```
+session_id  member_name    session_date  start_time  end_time
+----------  -------------  ------------  ----------  --------
+1           Alice Smith    2025-01-25    09:00:00    10:00:00
+2           Charlie Brown  2025-01-28    14:00:00    15:00:00
+3           Emily Jones    2025-02-04    10:00:00    11:00:00
+```
+
+### Variation 8.1v2 — With notes column
+
+```
+session_id  member_name    session_date  start_time  end_time  notes
+----------  -------------  ------------  ----------  --------  --------------------
+1           Alice Smith    2025-01-25    09:00:00    10:00:00  Strength training
+2           Charlie Brown  2025-01-28    14:00:00    15:00:00  Cardio workout
+3           Emily Jones    2025-02-04    10:00:00    11:00:00  Flexibility exercises
+```
